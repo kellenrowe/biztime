@@ -1,3 +1,4 @@
+"use strict";
 const request = require("supertest");
 const app = require("../app");
 let db = require("../db");
@@ -24,5 +25,8 @@ describe("GET /companies", function () {
                    "name": testCompany.name}]});
   });
 });
+
+
+
 
 

@@ -69,6 +69,7 @@ Needs to be given JSON like: {name, description}
 Returns update company object: {company: {code, name, description}} */
 
 router.put("/:code", async function (req, res, next) {
+  //validation 
   const { name, description } = req.body;
   const code = req.params.code;
   const results = await db.query(
@@ -98,7 +99,7 @@ router.delete("/:code", async function (req, res, next) {
   const results = await db.query(
     `DELETE FROM companies 
       WHERE code = $1
-      RETURNING code, name, description`,
+      RETURNING code`,
     [code],
   );
   if (results.rows.length === 0){
