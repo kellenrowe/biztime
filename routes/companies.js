@@ -35,7 +35,7 @@ router.get("/:code", async function (req, res, next) {
       WHERE code = $1`,[code]);
   
   if (results.rows.length === 0){
-    throw new NotFoundError(`${code} is not found the database`);
+    throw new NotFoundError(`${code} is not in the database`);
   }
   const company = results.rows[0];
   return res.json({ company });
@@ -61,13 +61,9 @@ router.post("/", async function (req, res, next) {
 
 /* PUT /companies/[code]
 Edit existing company.
-
 Should return 404 if company cannot be found.
-
 Needs to be given JSON like: {name, description}
-
 Returns update company object: {company: {code, name, description}} */
-
 router.put("/:code", async function (req, res, next) {
   //validation 
   const { name, description } = req.body;
@@ -81,7 +77,7 @@ router.put("/:code", async function (req, res, next) {
     [name, description, code],);
 
   if (results.rows.length === 0){
-    throw new NotFoundError(`${code} is not found the database`);
+    throw new NotFoundError(`${code} is not in the database`);
   }
   const company = results.rows[0];
   return res.json({ company });
@@ -103,7 +99,7 @@ router.delete("/:code", async function (req, res, next) {
     [code],
   );
   if (results.rows.length === 0){
-    throw new NotFoundError(`${code} is not found the database`);
+    throw new NotFoundError(`${code} is not in the database`);
   }
   return res.json({status: "deleted"});
 });
