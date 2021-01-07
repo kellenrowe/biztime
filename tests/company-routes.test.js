@@ -7,8 +7,9 @@ beforeEach(async function () {
   await db.query("DELETE FROM companies");
   let result = await db.query(`
     INSERT INTO companies (code, name, description)
-    VALUES ('TestCom', "TestCompany", "TestDescription")
+    VALUES ('TestCom', 'TestCompany', 'TestDescription')
     RETURNING code, name, description`);
+  // console.log("results", result.rows)
   testCompany = result.rows[0];
 });
 
@@ -19,8 +20,8 @@ describe("GET /companies", function () {
   test("Gets a list of all companies - testcompany", async function () {
     const resp = await request(app).get(`/companies`);
     expect(resp.body).toEqual({
-      companies: [testCompany],
-    });
+      companies: [{"code": testCompany.code, 
+                   "name": testCompany.name}]});
   });
 });
 
