@@ -22,22 +22,27 @@ router.get("/", async function (req, res, next) {
 
 /** GET /companies/:code:
  *  Return obj of company: {company:
- *  {code, name, description}}
+ *  {code, name, description, invoices: [id, ...]}}}
  *  or
  *  404 if not found
  */
 router.get("/:code", async function (req, res, next) {
   const code = req.params.code;
   
-  const results = await db.query(
+  const cResults = await db.query(
     `SELECT code, name, description
       FROM companies
-      WHERE code = $1`,[code]);
+      WHERE code = $1`,[code],);
   
-  if (results.rows.length === 0){
+  if (cResults.rows.length === 0){
     throw new NotFoundError(`${code} is not in the database`);
   }
-  const company = results.rows[0];
+  const company = cResults.rows[0];
+  const iResults = await db.query(
+    `SELECT id
+      FROM invoices
+      WHERE comp_code = $1`, [code],);
+  company.invoices = iResults.rows.map(i => i.id)
   return res.json({ company });
 });
 
@@ -84,12 +89,10 @@ router.put("/:code", async function (req, res, next) {
 });
 
 /* DELETE /companies/[code]
-Deletes company.
-
-Should return 404 if company cannot be found.
-
-Returns {status: "deleted"} */
-
+    Deletes company.
+    Should return 404 if company cannot be found.
+    Returns {status: "deleted"} 
+*/
 router.delete("/:code", async function (req, res, next) {
   const code = req.params.code;
   const results = await db.query(

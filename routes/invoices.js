@@ -78,59 +78,49 @@ router.post("/", async function (req, res, next) {
   return res.status(201).json({ invoice});
 });
 
-// /* PUT /invoices/[code]
-// Edit existing company.
-// Should return 404 if company cannot be found.
-// Needs to be given JSON like: {name, description}
-// Returns update company object: {company: {code, name, description}} */
-// router.put("/:code", async function (req, res, next) {
-//   //validation 
-//   const { name, description } = req.body;
-//   const code = req.params.code;
-//   const results = await db.query(
-//     `UPDATE invoices
-//            SET name=$1,
-//                description=$2
-//            WHERE code = $3
-//            RETURNING code, name, description`,
-//     [name, description, code],);
+/* PUT /invoices/[id]
+    updates an invoice.
+    Should return 404 if invoice cannot be found.
+    Needs to be given JSON like: { amt }
+    Returns update like: 
+    {invoice: {id, comp_code, amt, paid, add_date, paid_date}} 
+*/
+router.put("/:id", async function (req, res, next) {
+  //validation 
+  const { amt } = req.body;
+  const id = req.params.id;
+  const results = await db.query(
+    `UPDATE invoices
+           SET amt=$1
+           WHERE id = $2
+           RETURNING id, comp_code, amt, paid, add_date, paid_date`,
+    [amt, id],);
 
-//   if (results.rows.length === 0){
-//     throw new NotFoundError(`${code} is not in the database`);
-//   }
-//   const company = results.rows[0];
-//   return res.json({ company });
-// });
+  if (results.rows.length === 0){
+    throw new NotFoundError(`Invoice ${id} is not in the database`);
+  }
+  const invoice = results.rows[0];
+  return res.json({ invoice });
+});
 
-// /* DELETE /invoices/[code]
-// Deletes company.
-
-// Should return 404 if company cannot be found.
-
-// Returns {status: "deleted"} */
-
-// router.delete("/:code", async function (req, res, next) {
-//   const code = req.params.code;
-//   const results = await db.query(
-//     `DELETE FROM invoices 
-//       WHERE code = $1
-//       RETURNING code`,
-//     [code],
-//   );
-//   if (results.rows.length === 0){
-//     throw new NotFoundError(`${code} is not in the database`);
-//   }
-//   return res.json({status: "deleted"});
-// });
-
-
-
-
-
-
-
-
-
+/* DELETE /invoices/[id]
+    Deletes invoice.
+    Should return 404 if invoice cannot be found.
+    Returns {status: "deleted"} 
+*/
+router.delete("/:id", async function (req, res, next) {
+  const id = req.params.id;
+  const results = await db.query(
+    `DELETE FROM invoices 
+      WHERE id = $1
+      RETURNING id`,
+    [id],
+  );
+  if (results.rows.length === 0){
+    throw new NotFoundError(`Invoice ${id} is not in the database`);
+  }
+  return res.json({status: "deleted"});
+});
 
 
 
