@@ -7,7 +7,7 @@ const express = require("express");
 const router = new express.Router();
 
 //errors class to throw
-const { NotFoundError, BadRequestError } = require("../expressError");
+const { NotFoundError } = require("../expressError");
 
 /** GET /companies: Returns list of companies, like
  *  {companies: [{code, name}, ...]} */

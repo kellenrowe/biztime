@@ -7,7 +7,7 @@ const express = require("express");
 const router = new express.Router();
 
 //errors class to throw
-const { NotFoundError, BadRequestError } = require("../expressError");
+const { NotFoundError } = require("../expressError");
 
 const FOREIGN_KEY_CONSTRAINTS_COMP_CODE = 'invoices_comp_code_fkey';
 
@@ -44,9 +44,6 @@ router.get("/:id", async function (req, res, next) {
       FROM companies
       WHERE code = $1`,[invoice.comp_code])
   
-  // if (cResults.rows.length === 0){
-  //   throw new NotFoundError(`${invoice.comp_code} is not in the database`);
-  // }
   const company = cResults.rows[0];
   invoice.company = company;
   delete invoice.comp_code;
